@@ -1,0 +1,61 @@
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>بازی ساده</title>
+  <style>
+    body { margin: 0; background: #f0f0f0; text-align: center; font-family: sans-serif; }
+    #gameCanvas { background: #222; display: block; margin: 20px auto; border: 2px solid #000; }
+    #score { font-size: 24px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+<h1>بازی جمع کردن امتیاز</h1>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<div id="score">امتیاز: 0</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let player = { x: 180, y: 180, size: 20, color: 'lime' };
+let coin = { x: Math.random() * 380, y: Math.random() * 380, size: 15, color: 'gold' };
+let score = 0;
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+    ctx.fillStyle = coin.color;
+    ctx.fillRect(coin.x, coin.y, coin.size, coin.size);
+}
+
+function update() {
+    if (player.x < coin.x + coin.size &&
+        player.x + player.size > coin.x &&
+        player.y < coin.y + coin.size &&
+        player.y + player.size > coin.y) {
+            score++;
+            document.getElementById('score').innerText = 'امتیاز: ' + score;
+            coin.x = Math.random() * (canvas.width - coin.size);
+            coin.y = Math.random() * (canvas.height - coin.size);
+    }
+    draw();
+}
+
+canvas.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    player.x = touch.clientX - rect.left - player.size / 2;
+    player.y = touch.clientY - rect.top - player.size / 2;
+    if (player.x < 0) player.x = 0;
+    if (player.y < 0) player.y = 0;
+    if (player.x > canvas.width - player.size) player.x = canvas.width - player.size;
+    if (player.y > canvas.height - player.size) player.y = canvas.height - player.size;
+    update();
+    e.preventDefault();
+});
+
+draw();
+</script>
+</body>
+</html>
